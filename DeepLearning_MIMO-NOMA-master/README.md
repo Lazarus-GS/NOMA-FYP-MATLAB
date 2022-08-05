@@ -1,11 +1,6 @@
 # DeepLearning_MIMO-NOMA
 
 
-
-> hi, guys. I`m Jeongwoo Do in *** EE
-
-> The repository is realization of MIMO_NOMA signal detection system based on **C. Lin et al., “A deep learning approach for MIMO-NOMA downlink signal detection,” MDPI Sensors, vol. 19, no. 11, pp. 2526, 2019. ** and traditional detection shceme to compare performance.
-
 > Python
 >
 > - `DnnDetector.py` : Object-Oriented realizaition the Dnn based MIMO-NOMA signal detection system described in the paper 
