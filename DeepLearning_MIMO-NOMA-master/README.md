@@ -15,6 +15,3 @@
 >
 > - `MIMO_NOMA_channel_estimation_SIC.m` : the SIC detecion simulation,  but CSI (channel state information) is imperpect via channel estimation error
 
->If you are interested in my repository, feel free to contact email `wjddn279@*****.**.**`
-Since I'm in a brind recruitment process, I'll cover my email for a moment. 
-If you have any questions, please leave them in issue.
