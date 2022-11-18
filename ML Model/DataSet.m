@@ -73,6 +73,8 @@ for u = 1:length(pt)
     %Outage Probability
     %NOMA 
     
+    
+    
 end
 
 SNR = Pt - No;
