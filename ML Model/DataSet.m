@@ -43,6 +43,12 @@ SINR_noma = zeros(1,length(pt));
 SINR_oma = zeros(1,length(pt));
 
 for u = 1:length(pt)
+    
+    %IMPROVED FAIR PA%
+    %a1 = epsilon*(no + pt*g1)./(pt*g1*(1+epsilon));
+    %a1(a1>1) = 0;
+    %a2 = 1 - a1;
+     
     %capacity
     %NOMA capacity calculation
     C_noma_1 = log2(1 + pt(u)*a1.*g1./(pt(u)*a2.*g1+no)); %far user                  
