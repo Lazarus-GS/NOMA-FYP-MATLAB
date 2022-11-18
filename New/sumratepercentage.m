@@ -40,11 +40,11 @@ a3 = 1-a2;
 C_noma = zeros(1,length(pt));
 C_oma = zeros(1,length(pt));
 
-for u = 1:length(pt)
+for u = 1:2
     
     %NOMA capacity calculation
-    C_noma_2 = log2(1 + pt(u)*a2.*g2./(pt(u)*a3.*g2+no)); %far user                  
-    C_noma_3 = log2(1 + pt(u)*a3.*g3/no); %near user  
+    C_noma_2 = log2(1 + pt(u)*a3.*g3./(pt(u)*a2.*g2+no)); %far user                  
+    C_noma_3 = log2(1 + pt(u)*a2.*g2/no); %near user  
     
     
     %gamma_far(u) = mean(C_noma_2);
@@ -56,24 +56,22 @@ for u = 1:length(pt)
     
     C_oma_sum(u) = mean(C_oma_2 + C_oma_3); %Sum capacity of OMA
     
+    deltaSignal = abs(C_noma_sum - C_oma_sum);
+    percentageDifference = deltaSignal ./ C_oma_sum; % Percent by element.
+    meanPctDiff = mean(percentageDifference); % Average percentage over all elements.
+
+    disp(percentageDifference)
+    %disp(meanPctDiff*100)
+
+    %percentError = 0.03696863;
+    fprintf('Mean Percentage Difference: %0.2f%%', meanPctDiff*100);
+
+
+    
 end
 
 SNR = Pt - No;
-figure (1);
-
-plot(SNR,C_noma_sum,'color',rand(1,3),'linewidth',2); hold on; grid on;
-plot(SNR,C_oma_sum,'--','color',rand(1,3),'linewidth',2);
-xlabel('SNR (dB)');
-ylabel('Achievable sum rate (bps/Hz)');
-
-
-legend('NOMA - 0.1m', 'NOMA - 1m','NOMA - 100m','OMA - 0.1m', 'OMA - 1m','OMA - 100m');
-title('Capacity of NOMA');
-ylim([0 max(C_noma_sum)+1]);
-ylim([0 max(C_oma_sum)+1]);
-hold on ;
 
 end
-
 
 

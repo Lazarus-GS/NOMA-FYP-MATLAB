@@ -2,7 +2,7 @@
 N = 4;
 M = 4;
 n_symbol = 480000;
-n_iteration = 30;
+n_iteration = 20;
 SNR_db = [0:2:20];
 pilot_len = 10;
 symbol1 = 2 * randi([0,1],N,n_symbol,n_iteration) -1;
@@ -10,9 +10,9 @@ symbol1 = 2 * randi([0,1],N,n_symbol,n_iteration) -1;
 symbol2 = 2 * randi([0,1],N,n_symbol,n_iteration) -1;
 
 %Generating channel matrix(Rayleigh fading channel), channel quality : user1 < user2  
-%H1 = (randn(N,M,n_iteration)+1i*randn(N,M,n_iteration))/sqrt(2); 
+H1 = (randn(N,M,n_iteration)+1i*randn(N,M,n_iteration))/sqrt(2); 
 
-%H2 =2 *(randn(N,M,n_iteration)+1i*randn(N,M,n_iteration))/sqrt(2); 
+H2 =2 *(randn(N,M,n_iteration)+1i*randn(N,M,n_iteration))/sqrt(2); 
 
 %superposition coding, Power of SPC = 1, power allocation : user1 > user2
 
