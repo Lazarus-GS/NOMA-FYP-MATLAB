@@ -89,7 +89,7 @@ for u = 1:p
     SINR_oma_1 = pt(u)*g1/no;
     SINR_oma_2 = pt(u)*g2/no;
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+    
     
     %Outage Probability
     %NOMA 
