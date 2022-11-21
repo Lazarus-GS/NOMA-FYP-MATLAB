@@ -59,7 +59,7 @@ for u = 1:p
     %capacity
     %NOMA capacity calculation
     C_noma_1 = log2(1 + pt(u)*a1.*g1./(pt(u)*a2.*g1+no)); %far user
-    C_noma_12 = log2(1 + pt(u)*a1.*g./(pt(u)*a2.*g2+no));
+    C_noma_12 = log2(1 + pt(u)*a1.*g2./(pt(u)*a2.*g2+no));
     C_noma_2 = log2(1 + pt(u)*a2.*g2/no); %near user  
     
     
@@ -95,10 +95,10 @@ for u = 1:p
     %NOMA 
     
     for k = 1:N
-        if R1(k) < rate1
+        if C_noma_1(k) < rate1
             p1(u) = p1(u)+1;
         end
-        if (R12(k) < rate1)||(R2(k) < rate2)
+        if (C_noma_12(k) < rate1)||(C_noma_2(k) < rate2)
             p2(u) = p2(u)+1;
         end
     end
