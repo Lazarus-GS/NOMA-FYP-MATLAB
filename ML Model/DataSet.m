@@ -11,6 +11,10 @@ rate1 = 1; rate2 = 2;       %Target rate of users in bps/Hz
 N = 10^4;
 dgap = [0.1,1,100]; %in meters
 
+p = length(Pt);
+p1 = zeros(1,length(Pt));
+p2 = zeros(1,length(Pt));
+
 for i = 1:3 %dgap values loop 
 d2 = 2;      %near user %Distance of users
 d1 = d2+dgap(i); %far user
@@ -81,7 +85,14 @@ for u = 1:length(pt)
     %Outage Probability
     %NOMA 
     
-    
+    for k = 1:N
+        if R1(k) < rate1
+            p1(u) = p1(u)+1;
+        end
+        if (R12(k) < rate1)||(R2(k) < rate2)
+            p2(u) = p2(u)+1;
+        end
+    end
     
 end
 
