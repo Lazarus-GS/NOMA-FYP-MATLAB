@@ -6,6 +6,8 @@ close all;
 Pt = -114:5:-54;	%in dB
 pt = db2pow(Pt);	%in linear scale
 
+rate1 = 1; rate2 = 2;       %Target rate of users in bps/Hz
+
 N = 10^4;
 dgap = [0.1,1,100]; %in meters
 
