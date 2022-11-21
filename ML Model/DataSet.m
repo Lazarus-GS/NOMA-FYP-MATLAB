@@ -11,10 +11,6 @@ rate1 = 1; rate2 = 2;       %Target rate of users in bps/Hz
 N = 10^4;
 dgap = [0.1,1,100]; %in meters
 
-p = length(Pt);
-p1 = zeros(1,length(Pt));
-p2 = zeros(1,length(Pt));
-
 for i = 1:3 %dgap values loop 
 d2 = 2;      %near user %Distance of users
 d1 = d2+dgap(i); %far user
@@ -47,6 +43,10 @@ C_noma = zeros(1,length(pt));
 C_oma = zeros(1,length(pt));
 SINR_noma = zeros(1,length(pt));
 SINR_oma = zeros(1,length(pt));
+
+p = length(Pt);
+p1 = zeros(1,length(Pt));
+p2 = zeros(1,length(Pt));
 
 for u = 1:p
     
