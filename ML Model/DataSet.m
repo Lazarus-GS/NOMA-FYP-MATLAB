@@ -45,8 +45,10 @@ SINR_noma = zeros(1,length(pt));
 SINR_oma = zeros(1,length(pt));
 
 p = length(Pt);
-p1 = zeros(1,length(Pt));
-p2 = zeros(1,length(Pt));
+pn1 = zeros(1,length(Pt));
+pn2 = zeros(1,length(Pt));
+po1 = zeros(1,length(Pt));
+po2 = zeros(1,length(Pt));
 
 for u = 1:p
     
@@ -68,6 +70,7 @@ for u = 1:p
 
     %OMA capacity calculation
     C_oma_1 = (1/2)*log2(1 + pt(u)*g1/no);    %User 1
+    C_oma_12 = (1/2)*log2(1 + pt(u)*g1/no);
     C_oma_2 = (1/2)*log2(1 + pt(u)*g2/no);    %User 2
     
     C_oma_sum(u) = mean(C_oma_1 + C_oma_2); %Sum capacity of OMA
@@ -96,16 +99,37 @@ for u = 1:p
     
     for k = 1:N
         if C_noma_1(k) < rate1
-            p1(u) = p1(u)+1;
+            pn1(u) = pn1(u)+1;
         end
         if (C_noma_12(k) < rate1)||(C_noma_2(k) < rate2)
-            p2(u) = p2(u)+1;
+            pn2(u) = pn2(u)+1;
         end
     end
     
+    poutNoma1 = pn1/N;
+    poutNoma2 = pn2/N;
+    
+     %OMA 
+     for k = 1:N
+        if C_oma_1(k) < rate1
+            po1(u) = po1(u)+1;
+        end
+        if (C_oma_12(k) < rate1)||(C_oma_2(k) < rate2)
+            po2(u) = po2(u)+1;
+        end
+     end
+    
+    poutOma1 = pn1/N;
+    poutOma2 = pn2/N;
+    
 end
 
+
 SNR = Pt - No;
+
+
+end
+
 figure (1);
 
 plot(SNR,C_noma_sum,'color',rand(1,3),'linewidth',2); hold on; grid on;
@@ -119,5 +143,3 @@ title('Capacity of NOMA');
 ylim([0 max(C_noma_sum)+1]);
 ylim([0 max(C_oma_sum)+1]);
 hold on ;
-
-end
