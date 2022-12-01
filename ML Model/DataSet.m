@@ -11,6 +11,19 @@ rate1 = 1; rate2 = 2;       %Target rate of users in bps/Hz
 N = 10^4;
 dgap = [0.1,1,100]; %in meters
 
+%Generate noise samples for both users
+w1 = sqrt(no)*(randn(1,N)+1i*randn(1,N))/sqrt(2);
+w2 = sqrt(no)*(randn(1,N)+1i*randn(1,N))/sqrt(2);
+
+%Generate random binary data for two users
+data1 = randi([0 1],1,N);  %Data bits of user 1
+data2 = randi([0 1],1,N);  %Data bits of user 2
+
+%Do BPSK modulation of data
+x1 = 2*data1 - 1;
+x2 = 2*data2 - 1;
+
+
 for i = 1:3 %dgap values loop 
 d2 = 2;      %near user %Distance of users
 d1 = d2+dgap(i); %far user
@@ -27,6 +40,8 @@ g2 = (abs(h2)).^2;
 BW = 10^9; %bandwidth
 No = -174 + 10*log10(BW);
 no = (10^-3)*db2pow(No);
+
+SNR = Pt - No;
 
 %Pt = 0:2:40;                %Transmit power in dBm
 %pt = (10^-3)*10.^(Pt/10);   %Transmit power in linear scale
@@ -109,23 +124,68 @@ for u = 1:p
     poutNoma1 = pn1/N;
     poutNoma2 = pn2/N;
     
-     %OMA 
-     for k = 1:N
-        if C_oma_1(k) < rate1
-            po1(u) = po1(u)+1;
-        end
-        if (C_oma_12(k) < rate1)||(C_oma_2(k) < rate2)
-            po2(u) = po2(u)+1;
-        end
-     end
     
-    poutOma1 = pn1/N;
-    poutOma2 = pn2/N;
+    %OMA
+    
+    C_SISO = zeros(1,length(SNR));
+    
+
+    rateth = 1;
+    ITER = 10;%number of trials
+
+    p_siso_iter  = zeros(ITER,length(SNR));
+    
+
+    for i = 1:ITER
+    count = 0;
+    count2 = 0;
+    count_siso = 0;
+    
+    
+    for K = 1:length(SNR)
+       for b = 1:N  %over each bit    
+            h_SISO = (randn +1i*randn)/sqrt(2);
+
+            C_SISO(K) = C_SISO(K) + log2(1+ SNR(K)*norm(h_SISO)^2);
+            
+
+            %outage analysis
+            
+            siso(b) = log2(1+ SNR(K)*norm(h_SISO)^2);
+            
+            
+            if(siso(b)<rateth)
+                count_siso = count_siso+1;
+            end    
+       end  
+
+       p_siso(K)  = count_siso/N;  
+       
+       count = 0;
+       count2 = 0;
+       count_siso = 0;
+       
+
+    end
+
+    %average capacity
+    C_SISO = (C_SISO/N);
+
+    p_siso_iter(ITER,:) = p_siso_iter(ITER,:) + p_siso;
+    end
+
+    %average capacity over ITER iterations
+    C_SISO = (C_SISO/ITER);
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%BER
+
     
 end
 
 
-SNR = Pt - No;
+
 
 
 end
