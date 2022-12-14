@@ -220,19 +220,17 @@ for i = 1:4
 
 
         %OMA
-        i=randi([0,1],1,n);%generates random integers 0's and 1's
+        i=randi([0,1],1,n); %generates random integers 0's and 1's
         
       	%Transmission signal
         xoma = sqrt(pt(u))*x1;
         
-        sdev=sqrt(0.5/snr); % standard deviation of noise calculated from SNR
-        N=random('norm',0,sdev,[1,n]); % generation of noise sequence
-        yrc=rc.*i1+N;       %signal received through rayleigh and awgn channel
-
+        sdev=sqrt(0.5/SNR); % standard deviation of noise calculated from SNR
+        NS=random('norm',0,sdev,[1,n]); % generation of noise sequence
+        yrc=rc.*i1+NS;       %signal received through rayleigh and awgn channel
 
         YR=(yrc>=0); %baseband detection from Rayleigh,AWGN channel
         ErrorR=sum((xor(YR,i))); % no of errors in detected signal
-
 
         ber_R(l+1)=ErrorR/n; %simulated BER for AWGN,rayleigh channel
 
