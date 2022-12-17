@@ -226,7 +226,19 @@ for i = 1:4
       	%Transmission signal
         xoma = sqrt(pt(u))*x1;
         
+        %Received signals
+        y1 = h1'.*xoma + w1;
+        y2 = h2'.*xoma + w2;
         
+        % equalization
+        yHat = y./h;
+
+        % receiver - hard decision decoding
+        ipHat = real(yHat)>0;
+
+        % counting the errors
+        nErr(ii) = size(find([ip- ipHat]),2);
+
         
        
         end
