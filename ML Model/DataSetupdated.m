@@ -220,9 +220,9 @@ for i = 1:4
 
 
         %OMA
-        i=randi([0,1],1,N); %generates random integers 0's and 1's
-        i1=2*i-1;%bpsk modulation
-        
+        ip = rand(1,N)>0.5; % generating 0,1 with equal probability
+        s = 2*ip-1; % BPSK modulation 0 -> -1; 1 -> 0 
+
       	%Transmission signal
         xoma = sqrt(pt(u))*x1;
         
