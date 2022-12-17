@@ -251,16 +251,4 @@ for i = 1:4
 
 end
 
-figure (1);
 
-plot(SNR,C_noma_sum,'color',rand(1,3),'linewidth',2); hold on; grid on;
-plot(SNR,C_oma_sum,'--','color',rand(1,3),'linewidth',2);
-xlabel('SNR (dB)');
-ylabel('Achievable sum rate (bps/Hz)');
-
-
-legend('NOMA - 0.1m', 'NOMA - 1m','NOMA - 100m','OMA - 0.1m', 'OMA - 1m','OMA - 100m');
-title('Capacity of NOMA');
-ylim([0 max(C_noma_sum)+1]);
-ylim([0 max(C_oma_sum)+1]);
-hold on ;
