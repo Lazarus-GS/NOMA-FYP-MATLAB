@@ -226,7 +226,7 @@ for i = 1:4
       	%Transmission signal
         xoma = sqrt(pt(u))*x1;
         
-        sdev=sqrt(0.5/SNR); % standard deviation of noise calculated from SNR
+        sdev=sqrt(0.5./SNR); % standard deviation of noise calculated from SNR
         NS=random('norm',0,sdev,[1,N]); % generation of noise sequence
         yrc=rc.*i1+NS;       %signal received through rayleigh and awgn channel
 
@@ -235,12 +235,12 @@ for i = 1:4
 
         ber_R(l+1)=ErrorR/N; %simulated BER for AWGN,rayleigh channel
 
-        berthR(l+1)=0.5*(1-sqrt(SNR/(SNR+1))); %theoretical bit error rate of
+        berthR(l+1)=0.5*(1-sqrt(SNR./(SNR+1))); %theoretical bit error rate of
         % rayleigh,awgn channel
         p=((1-2*ber_R(l+1))^2)/(4*(ber_R(l+1)-(ber_R(l+1)^2)));
 
         outage(l+1)=1-exp(-3.16/p); %simulated ber computed from rayleigh channel
-        outageT(l+1)=1-exp(-3.16/SNR); %theoretical ber computed from rayleigh
+        outageT(l+1)=1-exp(-3.16./SNR); %theoretical ber computed from rayleigh
         %channel
         
        
