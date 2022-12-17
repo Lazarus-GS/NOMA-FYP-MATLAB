@@ -220,26 +220,27 @@ for i = 1:4
 
 
         %OMA
-        i=randi([0,1],1,n); %generates random integers 0's and 1's
+        i=randi([0,1],1,N); %generates random integers 0's and 1's
+        i1=2*i-1;%bpsk modulation
         
       	%Transmission signal
         xoma = sqrt(pt(u))*x1;
         
         sdev=sqrt(0.5/SNR); % standard deviation of noise calculated from SNR
-        NS=random('norm',0,sdev,[1,n]); % generation of noise sequence
+        NS=random('norm',0,sdev,[1,N]); % generation of noise sequence
         yrc=rc.*i1+NS;       %signal received through rayleigh and awgn channel
 
         YR=(yrc>=0); %baseband detection from Rayleigh,AWGN channel
         ErrorR=sum((xor(YR,i))); % no of errors in detected signal
 
-        ber_R(l+1)=ErrorR/n; %simulated BER for AWGN,rayleigh channel
+        ber_R(l+1)=ErrorR/N; %simulated BER for AWGN,rayleigh channel
 
-        berthR(l+1)=0.5*(1-sqrt(snr/(snr+1))); %theoretical bit error rate of
+        berthR(l+1)=0.5*(1-sqrt(SNR/(SNR+1))); %theoretical bit error rate of
         % rayleigh,awgn channel
         p=((1-2*ber_R(l+1))^2)/(4*(ber_R(l+1)-(ber_R(l+1)^2)));
 
         outage(l+1)=1-exp(-3.16/p); %simulated ber computed from rayleigh channel
-        outageT(l+1)=1-exp(-3.16/snr); %theoretical ber computed from rayleigh
+        outageT(l+1)=1-exp(-3.16/SNR); %theoretical ber computed from rayleigh
         %channel
         
        
