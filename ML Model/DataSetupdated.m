@@ -221,17 +221,18 @@ for i = 1:4
 
         %OMA
         ip = rand(1,N)>0.5; % generating 0,1 with equal probability
-        s = 2*ip-1; % BPSK modulation 0 -> -1; 1 -> 0 
+        s = 2*ip-1; % BPSK modulation
 
       	%Transmission signal
         xoma = sqrt(pt(u))*x1;
         
         %Received signals
-        y1 = h1'.*xoma + w1;
-        y2 = h2'.*xoma + w2;
+        y1oma = h1'.*xoma + w1;
+        y2oma = h2'.*xoma + w2;
         
         % equalization
-        yHat = y./h;
+        y1Hat = y1oma./h1;
+        y2Hat = y2oma./h2; 
 
         % receiver - hard decision decoding
         ipHat = real(yHat)>0;
