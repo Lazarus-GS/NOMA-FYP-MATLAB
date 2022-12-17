@@ -132,8 +132,6 @@ for i = 1:4
             %OMA
 
             C_SISO = zeros(1,length(SNR));
-
-
             rateth = 1;
             ITER = 10;%number of trials
 
