@@ -131,14 +131,14 @@ for i = 1:4
 
             %OMA
 
-            C_SISO = zeros(1,length(SNR));
+            C_SISO = zeros(1,length(SNR)); 
             rateth = 1;
             ITER = 10;%number of trials
 
             p_siso_iter  = zeros(ITER,length(SNR));
 
 
-            for i = 1:ITER
+            for jj = 1:ITER
             count = 0;
             count2 = 0;
             count_siso = 0;
