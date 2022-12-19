@@ -218,15 +218,16 @@ uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132,
 
 
         %OMA
-            ip = rand(1,N)>0.5; % generating 0,1 with equal probability
-            s = 2*ip-1; % BPSK modulation
+            %ip = rand(1,N)>0.5; % generating 0,1 with equal probability
+            
 
-            %Transmission signal
-            xoma = sqrt(pt(u))*x1;
+            %Transmission signals
+            xoma1 = sqrt(pt(u))*x1;
+            xoma2 = sqrt(pt(u))*x2;
 
             %Received signals
-            y1oma = h1'.*xoma + w1;
-            y2oma = h2'.*xoma + w2;
+            y1oma = h1'.*xoma1 + w1;
+            y2oma = h2'.*xoma2 + w2;
 
             % equalization
             y1Hat = y1oma./h1;
@@ -237,8 +238,8 @@ uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132,
             ipHat2 = real(y2Hat)>0;
 
             % counting the errors
-            nErr1(m,u) = size(find([ip- ipHat1]),2);
-            nErr2(m,u) = size(find([ip- ipHat2]),2);
+            nErr1(m,u) = size(find([data1- ipHat1]),2);
+            nErr2(m,u) = size(find([data2- ipHat2]),2);
 
             simBer1(m,u) = nErr1(m,u)/N; % simulated ber
             simBer2(m,u) = nErr2(m,u)/N;
