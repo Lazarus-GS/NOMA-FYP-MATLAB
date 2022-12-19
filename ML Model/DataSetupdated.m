@@ -8,17 +8,17 @@ pt = db2pow(Pt);	%in linear scale
 
 rate1 = 1; rate2 = 2;       %Target rate of users in bps/Hz
 
-N = 10^4;
+N = 10^4; %Length of bit stream
 dgap = [0.1,1,100]; %in meters
 
 un = 7.071;
 uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132, 15.811, 15.811, 21.2132];
 
-for i = 1:4
+% for jk = 1:4
     
     for m = 1:12 %dgap values loop 
         d2 = un; %near user %Distance of users
-        d1 = uf(i); %far user
+        d1 = uf(m); %far user
         eta = 4; %Path loss exponent
 
         %Rayleigh fading coefficients of both users
@@ -31,7 +31,7 @@ for i = 1:4
 
         BW = 10^9; %bandwidth
         No = -174 + 10*log10(BW);
-        no = (10^-3)*db2pow(No);
+        no = (10^-3)*db2pow(No); 
 
         SNR = Pt - No;
 
@@ -58,16 +58,16 @@ for i = 1:4
         a2 = 1-a1; 
         %a3 = 1-(a1+a2);
 
-        C_noma = zeros(1,length(pt));
-        C_oma = zeros(1,length(pt));
-        SINR_noma = zeros(1,length(pt));
-        SINR_oma = zeros(1,length(pt));
+        C_noma = zeros(12,length(pt));
+        C_oma = zeros(12,length(pt));
+        SINR_noma = zeros(12,length(pt));
+        SINR_oma = zeros(12,length(pt));
 
         p = length(Pt);
-        pn1 = zeros(1,length(Pt));
-        pn2 = zeros(1,length(Pt));
-        po1 = zeros(1,length(Pt));
-        po2 = zeros(1,length(Pt));
+        pn1 = zeros(12,length(Pt));
+        pn2 = zeros(12,length(Pt));
+        po1 = zeros(12,length(Pt));
+        po2 = zeros(12,length(Pt));
 
         for u = 1:p
 
@@ -85,31 +85,31 @@ for i = 1:4
 
 
             %gamma_far(u) = mean(C_noma_2);
-            C_noma_sum(u) = mean(C_noma_1 + C_noma_2);  %Sum capacity of NOMA
+            C_noma_sum(m,u) = mean(C_noma_1 + C_noma_2);  %Sum capacity of NOMA
 
             %OMA capacity calculation
             C_oma_1 = (1/2)*log2(1 + pt(u)*g1/no);    %User 1
             C_oma_12 = (1/2)*log2(1 + pt(u)*g1/no);
             C_oma_2 = (1/2)*log2(1 + pt(u)*g2/no);    %User 2
 
-            C_oma_sum(u) = mean(C_oma_1 + C_oma_2); %Sum capacity of OMA
+            C_oma_sum(m,u) = mean(C_oma_1 + C_oma_2); %Sum capacity of OMA
 
             %Average of achievable rates
-            R1_av(u) = mean(C_noma_1);
-            R2_av(u) = mean(C_noma_2);
+            R1_av(m,u) = mean(C_noma_1);
+            R2_av(m,u) = mean(C_noma_2);
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
 
             %Recieved SINR
             %NOMA recieved SINR
 
-            SINR_noma_1 = pt(u)*a1.*g1./(pt(u)*a2.*g1+no); %far user 
-            SINR_noma_2 = pt(u)*a2.*g2/no; %near user
+            SINR_noma_1(m,u) = mean(pt(u)*a1.*g1./(pt(u)*a2.*g1+no)); %far user 
+            SINR_noma_2(m,u) = mean(pt(u)*a2.*g2/no); %near user
 
             %OMA Recieved SNR
 
-            SINR_oma_1 = pt(u)*g1/no;
-            SINR_oma_2 = pt(u)*g2/no;
+            SINR_oma_1(m,u) = mean(pt(u)*g1/no);
+            SINR_oma_2(m,u) = mean(pt(u)*g2/no);
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
 
@@ -125,8 +125,8 @@ for i = 1:4
                 end
             end
 
-            poutNoma1 = pn1/N;
-            poutNoma2 = pn2/N;
+            poutNoma1(m,k) = pn1(u)/N;
+            poutNoma2(m,k) = pn2(u)/N;
 
 
             %OMA
@@ -161,7 +161,7 @@ for i = 1:4
                     end    
                end  
 
-               p_siso(K)  = count_siso/N;  
+               p_siso(m,K)  = count_siso/N;  
 
                count = 0;
                count2 = 0;
@@ -173,7 +173,7 @@ for i = 1:4
             %average capacity
             C_SISO = (C_SISO/N);
 
-            p_siso_iter(ITER,:) = p_siso_iter(ITER,:) + p_siso;
+            p_siso_iter(ITER,:) = p_siso_iter(ITER,:) + p_siso(m,K);
             end
 
             %average capacity over ITER iterations
@@ -200,7 +200,7 @@ for i = 1:4
             x1_hat(eq1>0) = 1;
 
             %Compare decoded x1_hat with data1 to estimate BER
-            ber1(u) = biterr(data1,x1_hat)/N;
+            ber1(m,u) = biterr(data1,x1_hat)/N;
 
             %----------------------------------
 
@@ -213,7 +213,7 @@ for i = 1:4
             x2_hat = zeros(1,N);
             x2_hat(real(y2_dash)>0) = 1;
 
-            ber2(u) = biterr(x2_hat, data2)/N;
+            ber2(m,u) = biterr(x2_hat, data2)/N;
             %-----------------------------------
 
 
@@ -237,16 +237,16 @@ for i = 1:4
             ipHat2 = real(y2Hat)>0;
 
             % counting the errors
-            nErr1(i) = size(find([ip- ipHat1]),2);
-            nErr2(i) = size(find([ip- ipHat2]),2);
+            nErr1(m,u) = size(find([ip- ipHat1]),2);
+            nErr2(m,u) = size(find([ip- ipHat2]),2);
 
-            simBer1 = nErr1/N; % simulated ber
-            simBer2 = nErr2/N;
+            simBer1(m,u) = nErr1(m,u)/N; % simulated ber
+            simBer2(m,u) = nErr2(m,u)/N;
        
         end
 
     end
 
-end
+% end
 
 
