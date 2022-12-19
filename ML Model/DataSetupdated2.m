@@ -230,8 +230,8 @@ uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132,
             y2oma = h2'.*xoma2 + w2;
 
             % equalization
-            y1Hat = y1oma./h1';
-            y2Hat = y2oma./h2'; 
+            y1Hat = y1oma./h1;
+            y2Hat = y2oma./h2; 
 
             % receiver - hard decision decoding
             ipHat1 = real(y1Hat)>0;
