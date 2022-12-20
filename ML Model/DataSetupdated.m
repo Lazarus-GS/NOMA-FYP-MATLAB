@@ -2,7 +2,7 @@ clc;
 clear variables; 
 close all;
 
-seed = 0;
+seed = 10;
 rng(seed);
 
 %transmit power range
