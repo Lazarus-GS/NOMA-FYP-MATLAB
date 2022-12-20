@@ -15,10 +15,13 @@ t = data_5';
 % 'trainlm' is usually fastest.
 % 'trainbr' takes longer but may be better for challenging problems.
 % 'trainscg' uses less memory. Suitable in low memory situations.
-trainFcn = 'trainscg';  % Scaled conjugate gradient backpropagation.
+%trainFcn = 'trainscg';  % Scaled conjugate gradient backpropagation.
+trainFcn = 'trainlm'; %Levenberg-Marquardt
+%trainFcn = 'trainrp'; %Resilient Backpropagation
+%trainFcn = 'trainbfg'; %BFGS Quasi-Newton
 
 % Create a Pattern Recognition Network
-hiddenLayerSize = 10;
+hiddenLayerSize = 20;
 net = patternnet(hiddenLayerSize, trainFcn);
 
 % Choose Input and Output Pre/Post-Processing Functions
