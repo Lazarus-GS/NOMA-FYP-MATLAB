@@ -28,6 +28,9 @@ uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132,
         %Channel gains
         g1 = (abs(h1)).^2;
         g2 = (abs(h2)).^2;
+        ga1(m) = mean((abs(h1)).^2);
+        ga2(m) = mean((abs(h2)).^2);
+       
 
         BW = 10^9; %bandwidth
         No = -174 + 10*log10(BW);
@@ -97,6 +100,9 @@ uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132,
             %Average of achievable rates
             R1_av(m,u) = mean(C_noma_1);
             R2_av(m,u) = mean(C_noma_2);
+            
+            ga1(m,u) = mean((abs(h1)).^2);
+            ga2(m,u) = mean((abs(h2)).^2);
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
 
@@ -125,59 +131,23 @@ uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132,
                 end
             end
 
-            poutNoma1(m,k) = pn1(u)/N;
-            poutNoma2(m,k) = pn2(u)/N;
+            poutNoma1(m,u) = pn1(u)/N;
+            poutNoma2(m,u) = pn2(u)/N;
 
 
-            %OMA
-
-            C_SISO = zeros(1,length(SNR)); 
-            rateth = 1;
-            ITER = 10;%number of trials
-
-            p_siso_iter  = zeros(ITER,length(SNR));
-
-
-            for jj = 1:ITER
-            count = 0;
-            count2 = 0;
-            count_siso = 0;
-
-
-            for K = 1:length(SNR)
-               for b = 1:N  %over each bit    
-                    h_SISO = (randn +1i*randn)/sqrt(2);
-
-                    C_SISO(K) = C_SISO(K) + log2(1+ SNR(K)*norm(h_SISO)^2);
-
-
-                    %outage analysis
-
-                    siso(b) = log2(1+ SNR(K)*norm(h_SISO)^2);
-
-
-                    if(siso(b)<rateth)
-                        count_siso = count_siso+1;
-                    end    
-               end  
-
-               p_siso(m,K)  = count_siso/N;  
-
-               count = 0;
-               count2 = 0;
-               count_siso = 0;
-
-
+            %OMA 
+            for ko = 1:N
+                if C_oma_1(ko) < rate1
+                    po1(u) = po1(u)+1;
+                end
+                if (C_oma_2(ko) < rate2)
+                    po2(u) = po2(u)+1;
+                end
             end
 
-            %average capacity
-            C_SISO = (C_SISO/N);
+            poutoma1(m,u) = po1(u)/N;
+            poutoma2(m,u) = po2(u)/N;
 
-            p_siso_iter(ITER,:) = p_siso_iter(ITER,:) + p_siso(m,K);
-            end
-
-            %average capacity over ITER iterations
-            C_SISO = (C_SISO/ITER);
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
