@@ -2,6 +2,9 @@ clc;
 clear variables; 
 close all;
 
+seed = 0;
+rng(seed);
+
 %transmit power range
 Pt = -114:5:-54;	%in dB
 pt = db2pow(Pt);	%in linear scale
