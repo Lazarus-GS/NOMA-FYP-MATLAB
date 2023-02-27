@@ -92,7 +92,7 @@ if (false)
     genFunction(net,'myNeuralNetworkFunction','MatrixOnly','yes');
     y = myNeuralNetworkFunction(x);
 end
-if (false)
+if (true)
     % Generate a Simulink diagram for simulation or deployment with.
     % Simulink Coder tools.
     gensim(net);
