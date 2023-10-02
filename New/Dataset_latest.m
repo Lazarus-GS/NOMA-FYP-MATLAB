@@ -8,7 +8,7 @@ total_energy_consumed_OMA = 0;
 total_energy_consumed_NOMA = 0;
 
 %transmit power range
-Pt = -114:5:-54;	%in dB
+Pt = -114:2:-54;	%in dB
 pt = db2pow(Pt);	%in linear scale
 
 rate1 = 1; rate2 = 2;       %Target rate of users in bps/Hz
@@ -121,12 +121,6 @@ uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132,
 
             SINR_oma_1(m,u) = mean(pt(u)*g1/no);
             SINR_oma_2(m,u) = mean(pt(u)*g2/no);
-            
-            
-            % Energy consumed for this transmission (assuming energy is proportional to power and time)
-            energy_for_this_transmission = pt(u) * (N/BW); % N/BW gives the time for the transmission
-            total_energy_consumed_OMA = total_energy_consumed_OMA + energy_for_this_transmission;
-            total_energy_consumed_NOMA = total_energy_consumed_NOMA + energy_for_this_transmission;
 
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
@@ -242,17 +236,8 @@ zlabel('Sum Rate Capacity (bps/Hz)');
 title('Sum Rate Capacity for NOMA over SNR and User Position');
 colorbar;
 
-figure;
-contourf(SNR_grid, uf_grid, C_noma_sum, 'ShowText','on');
-xlabel('SNR (dB)');
-ylabel('Distance from Access Point (m)');
-title('Contour Plot of Sum Rate Capacity for NOMA');
-colorbar;
-
     
 % Calculate metrics after the loop for OMA and NOMA
-energy_efficiency_OMA = N / total_energy_consumed_OMA;
-energy_efficiency_NOMA = N / total_energy_consumed_NOMA;
 
 spectral_efficiency_OMA = mean(C_oma_sum(:,u)) / BW;
 spectral_efficiency_NOMA = mean(C_noma_sum(:,u)) / BW;
@@ -267,14 +252,12 @@ data_loss_rate_NOMA_user2 = ber2(m,u);
 
 % Display the metrics for OMA and NOMA
 disp('Metrics for OMA:');
-disp(['Energy Efficiency: ', num2str(energy_efficiency_OMA)]);
 disp(['Spectral Efficiency: ', num2str(spectral_efficiency_OMA)]);
 disp(['Data Throughput: ', num2str(data_throughput_OMA)]);
 disp(['Data Loss Rate (User 1): ', num2str(data_loss_rate_OMA_user1)]);
 disp(['Data Loss Rate (User 2): ', num2str(data_loss_rate_OMA_user2)]);
 
 disp('Metrics for NOMA:');
-disp(['Energy Efficiency: ', num2str(energy_efficiency_NOMA)]);
 disp(['Spectral Efficiency: ', num2str(spectral_efficiency_NOMA)]);
 disp(['Data Throughput: ', num2str(data_throughput_NOMA)]);
 disp(['Data Loss Rate (User 1): ', num2str(data_loss_rate_NOMA_user1)]);
@@ -290,27 +273,122 @@ position_grid = {'a1', 'a2', 'a3', 'a4',
 near_user_positions = {'b2', 'b3', 'c2', 'c3'};
 
 % Define the far user positions based on the uf array
-far_user_positions = {'a1', 'a2', 'a3', 'b1', 'b4', 'c1', 'c4', 'd1', 'd2', 'd3', 'd4'};
+far_user_positions = {'a1', 'a2', 'a3', 'a4', 'b1', 'b4', 'c1', 'c4', 'd1', 'd2', 'd3', 'd4'};
+
+% Define line styles for NOMA and OMA
+lineStyles = {'-', '--'}; % Solid for NOMA, Dashed for OMA
+
+% Define markers based on the number of near user positions
+markers = {'o', 's', 'd', '^', 'v', '>', '<', 'p', 'h', '*'};
+
+% Define a colormap based on the number of far user positions
+colors = jet(length(far_user_positions));
 
 % Create a figure
 figure;
 
-% Loop through each combination of near and far user positions
+% Create empty arrays to store legend handles and entries
+legendHandles = [];
+legendEntries = {};
+
+% Define marker indices to increase the number of markers in a line
+markerIndices = 1:1:length(SNR); % Place a marker every 5 data points
+
+% Loop through each near user position
 for i = 1:length(near_user_positions)
+    % Loop through each far user position
     for j = 1:length(far_user_positions)
-        % Extract the sum rate capacity for the current combination
-        sum_rate = C_noma_sum(j, :); % Assuming C_noma_sum is indexed by the far user position
+        % Extract the sum rate capacity for NOMA and OMA for the current combination
+        sum_rate_noma = C_noma_sum(j, :);
+        sum_rate_oma = C_oma_sum(j, :);
         
-        % Plot the sum rate capacity vs SNR
-        plot(SNR, sum_rate, 'DisplayName', [near_user_positions{i} ' to ' far_user_positions{j}]);
+        % Plot the NOMA sum rate capacity vs SNR with solid lines, colormap, specific marker, and increased marker frequency
+        hNOMA = plot(SNR, sum_rate_noma, 'LineStyle', lineStyles{1}, 'Marker', markers{i}, 'LineWidth', 1.5, 'Color', colors(j,:), 'MarkerIndices', markerIndices);
         hold on;
+        
+        % Plot the OMA sum rate capacity vs SNR with dashed lines, colormap, specific marker, and increased marker frequency
+        hOMA = plot(SNR, sum_rate_oma, 'LineStyle', lineStyles{2}, 'Marker', markers{i}, 'LineWidth', 1.5, 'Color', colors(j,:), 'MarkerIndices', markerIndices);
+        hold on;
+        
+        % Store handles and entries for the legend
+        legendHandles = [legendHandles, hNOMA, hOMA];
+        legendEntries{end+1} = ['NOMA: ' near_user_positions{i} ' to ' far_user_positions{j}];
+        legendEntries{end+1} = ['OMA: ' near_user_positions{i} ' to ' far_user_positions{j}];
     end
 end
 
-% Add labels and legend
+% Add labels, title, and legend
 xlabel('SNR (dB)');
 ylabel('Sum Rate Capacity (bps/Hz)');
 title('Sum Rate Capacity vs SNR for Different User Positions');
-legend('Location', 'best');
+legend(legendHandles, legendEntries, 'Location', 'eastoutside');
+
 grid on;
 hold off;
+%%%%%%%%%%%%%%%%%%%%%%
+
+% Define a colormap
+colors = jet(length(far_user_positions));
+
+markerSpacing = 4; % Adjust this value to change the frequency of markers
+
+for i = 1:length(near_user_positions)
+    % Create a new figure for each near user position
+    figure;
+    
+    for j = 1:length(far_user_positions)
+        % Extract the sum rate capacity for NOMA and OMA
+        sum_rate_noma = C_noma_sum(j, :);
+        sum_rate_oma = C_oma_sum(j, :);
+        
+        % Plot the NOMA sum rate capacity vs SNR with solid lines, colors, and 'N' marker
+        plot(SNR, sum_rate_noma, 'DisplayName', ['NOMA: ' near_user_positions{i} ' to ' far_user_positions{j}], ...
+            'LineStyle', '-', 'LineWidth', 1.5, 'Color', colors(j,:), 'Marker', '>', 'MarkerIndices', 1:markerSpacing:length(SNR));
+        hold on;
+        
+        % Plot the OMA sum rate capacity vs SNR with dashed lines, colors, and 'O' marker
+        plot(SNR, sum_rate_oma, 'DisplayName', ['OMA: ' near_user_positions{i} ' to ' far_user_positions{j}], ...
+            'LineStyle', '--', 'LineWidth', 1.5, 'Color', colors(j,:), 'Marker', 'O', 'MarkerIndices', 1:markerSpacing:length(SNR));
+    end
+    
+    % Add labels, title, and legend
+    xlabel('SNR (dB)');
+    ylabel('Sum Rate Capacity (bps/Hz)');
+    title(['Sum Rate for Near User at ' near_user_positions{i}]);
+    legend('Location', 'eastoutside'); % Place legend outside
+    grid on;
+    hold off;
+end
+
+% Extract the BER data from the provided code
+BER_OMA_near = simBer1;
+BER_OMA_far = simBer2;
+BER_NOMA_near = ber1;
+BER_NOMA_far = ber2;
+
+% Create a figure
+figure;
+
+% Plot BER for NOMA - Near User
+semilogy(Pt, mean(BER_NOMA_near, 1), '-', 'DisplayName', 'NOMA - Near User', 'LineWidth', 1.5);
+hold on;
+
+% Plot BER for NOMA - Far User
+semilogy(Pt, mean(BER_NOMA_far, 1), '-', 'DisplayName', 'NOMA - Far User', 'LineWidth', 1.5);
+
+% Plot BER for OMA - Near User
+semilogy(Pt, mean(BER_OMA_near, 1), '--', 'DisplayName', 'OMA - Near User', 'LineWidth', 1.5);
+
+% Plot BER for OMA - Far User
+semilogy(Pt, mean(BER_OMA_far, 1), '--', 'DisplayName', 'OMA - Far User', 'LineWidth', 1.5);
+
+% Add labels, title, and legend
+xlabel('Transmit Power (dB)');
+ylabel('Bit Error Rate (BER)');
+title('BER vs Transmit Power for Near and Far Users');
+legend('Location', 'southwest');
+grid on;
+hold off;
+
+
+
