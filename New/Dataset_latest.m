@@ -236,6 +236,53 @@ zlabel('Sum Rate Capacity (bps/Hz)');
 title('Sum Rate Capacity for NOMA over SNR and User Position');
 colorbar;
 
+%%%%%%%%%%%
+
+% Create a meshgrid for Transmit Power and User Positions
+[Pt_grid, uf_grid] = meshgrid(Pt, uf);
+
+% Create a 3D surface plot for NOMA - Near User
+figure;
+surf(Pt_grid, uf_grid, poutNoma1);
+xlabel('Transmit Power (dB)');
+ylabel('Distance from Access Point (m)');
+zlabel('Outage Probability (NOMA - Near User)');
+title('Outage Probability for NOMA - Near User over Transmit Power and User Position');
+colorbar;
+hold on;
+
+% Create a 3D surface plot for NOMA - Far User
+figure;
+surf(Pt_grid, uf_grid, poutNoma2);
+xlabel('Transmit Power (dB)');
+ylabel('Distance from Access Point (m)');
+zlabel('Outage Probability (NOMA - Far User)');
+title('Outage Probability for NOMA - Far User over Transmit Power and User Position');
+colorbar;
+hold on;
+
+% Create a 3D surface plot for OMA - Near User
+figure;
+surf(Pt_grid, uf_grid, poutoma1);
+xlabel('Transmit Power (dB)');
+ylabel('Distance from Access Point (m)');
+zlabel('Outage Probability (OMA - Near User)');
+title('Outage Probability for OMA - Near User over Transmit Power and User Position');
+colorbar;
+hold on;
+
+% Create a 3D surface plot for OMA - Far User
+figure;
+surf(Pt_grid, uf_grid, poutoma2);
+xlabel('Transmit Power (dB)');
+ylabel('Distance from Access Point (m)');
+zlabel('Outage Probability (OMA - Far User)');
+title('Outage Probability for OMA - Far User over Transmit Power and User Position');
+colorbar;
+hold off;
+
+%%%%%%%%%%%%
+
     
 % Calculate metrics after the loop for OMA and NOMA
 
@@ -389,6 +436,47 @@ title('BER vs Transmit Power for Near and Far Users');
 legend('Location', 'southwest');
 grid on;
 hold off;
+
+% Define a range of target rates
+target_rates_range = linspace(min([rate1, rate2]), max([rate1, rate2]), 100); % You can adjust the number of points as needed
+
+% Compute the outage probability for each target rate
+Outage_NOMA_near_rate = zeros(1, length(target_rates_range));
+Outage_NOMA_far_rate = zeros(1, length(target_rates_range));
+Outage_OMA_near_rate = zeros(1, length(target_rates_range));
+Outage_OMA_far_rate = zeros(1, length(target_rates_range));
+
+for i = 1:length(target_rates_range)
+    Outage_NOMA_near_rate(i) = mean(Outage_NOMA_near(target_rates_range(i) > C_noma_sum));
+    Outage_NOMA_far_rate(i) = mean(Outage_NOMA_far(target_rates_range(i) > C_noma_sum));
+    Outage_OMA_near_rate(i) = mean(Outage_OMA_near(target_rates_range(i) > C_oma_sum));
+    Outage_OMA_far_rate(i) = mean(Outage_OMA_far(target_rates_range(i) > C_oma_sum));
+end
+
+% Create a figure
+figure;
+
+% Plot Outage Probability for NOMA - Near User
+semilogy(target_rates_range, Outage_NOMA_near_rate, '-', 'DisplayName', 'NOMA - Near User', 'LineWidth', 1.5);
+hold on;
+
+% Plot Outage Probability for NOMA - Far User
+semilogy(target_rates_range, Outage_NOMA_far_rate, '-', 'DisplayName', 'NOMA - Far User', 'LineWidth', 1.5);
+
+% Plot Outage Probability for OMA - Near User
+semilogy(target_rates_range, Outage_OMA_near_rate, '--', 'DisplayName', 'OMA - Near User', 'LineWidth', 1.5);
+
+% Plot Outage Probability for OMA - Far User
+semilogy(target_rates_range, Outage_OMA_far_rate, '--', 'DisplayName', 'OMA - Far User', 'LineWidth', 1.5);
+
+% Add labels, title, and legend
+xlabel('Target Rate (bps/Hz)');
+ylabel('Outage Probability');
+title('Outage Probability vs Target Rate for Near and Far Users');
+legend('Location', 'northeast');
+grid on;
+hold off;
+
 
 
 
