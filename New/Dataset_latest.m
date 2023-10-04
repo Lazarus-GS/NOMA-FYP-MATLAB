@@ -19,7 +19,7 @@ dgap = [0.1,1,100]; %in meters
 un = 7.071;
 uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132, 15.811, 15.811, 21.2132];
 
-% for jk = 1:4
+%for jk = 1:4
     
     for m = 1:12 %dgap values loop 
         d2 = un; %near user %Distance of users
@@ -226,19 +226,6 @@ uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132,
 
     end
     
-[SNR_grid, uf_grid] = meshgrid(SNR, uf);
-
-figure;
-surf(SNR_grid, uf_grid, C_noma_sum, 'FaceColor', 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'none'); % NOMA in red
-hold on;
-surf(SNR_grid, uf_grid, C_oma_sum, 'FaceColor', 'b', 'FaceAlpha', 0.5, 'EdgeColor', 'none'); % OMA in blue
-xlabel('SNR (dB)');
-ylabel('Distance from Access Point (m)');
-zlabel('Sum Rate Capacity (bps/Hz)');
-title('Sum Rate Capacity for NOMA and OMA over SNR and User Position');
-legend('NOMA', 'OMA');
-hold off;
-    
 % Calculate metrics after the loop for OMA and NOMA
 
 spectral_efficiency_OMA = mean(C_oma_sum(:,u)) / BW;
@@ -264,6 +251,21 @@ disp(['Spectral Efficiency: ', num2str(spectral_efficiency_NOMA)]);
 disp(['Data Throughput: ', num2str(data_throughput_NOMA)]);
 disp(['Data Loss Rate (User 1): ', num2str(data_loss_rate_NOMA_user1)]);
 disp(['Data Loss Rate (User 2): ', num2str(data_loss_rate_NOMA_user2)]);
+
+
+[SNR_grid, uf_grid] = meshgrid(SNR, uf);
+
+figure;
+surf(SNR_grid, uf_grid, C_noma_sum, 'FaceColor', 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'none'); % NOMA in red
+hold on;
+surf(SNR_grid, uf_grid, C_oma_sum, 'FaceColor', 'b', 'FaceAlpha', 0.5, 'EdgeColor', 'none'); % OMA in blue
+xlabel('SNR (dB)');
+ylabel('Distance from Access Point (m)');
+zlabel('Sum Rate Capacity (bps/Hz)');
+title('Sum Rate Capacity for NOMA and OMA over SNR and User Position');
+legend('NOMA', 'OMA');
+hold off;
+
 
 % Define the position grid
 position_grid = {'a1', 'a2', 'a3', 'a4', 
@@ -397,8 +399,6 @@ hold off;
 %%%%%%%%%%%%%%%%%%%%%%
 
 %outage probability plot
-
-% Outage probability plot
 
 % Create a figure for the combined outage probability
 figure;
