@@ -329,31 +329,31 @@ grid on;
 hold off;
 %%%%%%%%%%%%%%%%%%%%%%
 %Sum rate capacity over SNR for different user
-% Create a new figure before starting the loop
-figure;
+% Define a colormap
 colors = jet(length(far_user_positions));
-% Loop through each near user position
+
+markerSpacing = 4; % Adjust this value to change the frequency of markers
+
 for i = 1:length(near_user_positions)
-    
-    % Specify the current subplot
-    subplot(2, 2, i); % Assuming you have 4 near user positions, this will create a 2x2 grid of subplots
+    % Create a new figure for each near user position
+    figure;
     
     for j = 1:length(far_user_positions)
         % Extract the sum rate capacity for NOMA and OMA
         sum_rate_noma = C_noma_sum(j, :);
         sum_rate_oma = C_oma_sum(j, :);
         
-        % Plot the NOMA sum rate capacity vs SNR with solid lines, colors, and 'N' marker
+        % Plot the NOMA sum rate capacity vs SNR with solid lines, colors, and '>' marker
         plot(SNR, sum_rate_noma, 'DisplayName', ['NOMA: ' near_user_positions{i} ' to ' far_user_positions{j}], ...
-            'LineStyle', '-', 'LineWidth', 1.5, 'Color', colors(j,:), 'Marker', '>');
+            'LineStyle', '-', 'LineWidth', 1.5, 'Color', colors(j,:), 'Marker', '>', 'MarkerIndices', 1:markerSpacing:length(SNR));
         hold on;
         
         % Plot the OMA sum rate capacity vs SNR with dashed lines, colors, and 'O' marker
         plot(SNR, sum_rate_oma, 'DisplayName', ['OMA: ' near_user_positions{i} ' to ' far_user_positions{j}], ...
-            'LineStyle', '--', 'LineWidth', 1.5, 'Color', colors(j,:), 'Marker', 'O');
+            'LineStyle', '--', 'LineWidth', 1.5, 'Color', colors(j,:), 'Marker', 'O', 'MarkerIndices', 1:markerSpacing:length(SNR));
     end
     
-    % Add labels, title, and legend to each subplot
+    % Add labels, title, and legend
     xlabel('SNR (dB)');
     ylabel('Sum Rate Capacity (bps/Hz)');
     title(['Sum Rate for Near User at ' near_user_positions{i}]);
@@ -361,7 +361,6 @@ for i = 1:length(near_user_positions)
     grid on;
     hold off;
 end
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Extract the BER data from the provided code
@@ -398,28 +397,38 @@ hold off;
 
 %outage probability plot
 
-% Outage probability plot
-
-% Create a figure for the combined outage probability
+% Create a figure for the far user
 figure;
 
 % Plot outage probability for NOMA - Far User
-semilogy(SNR, mean(poutNoma1, 1), '-', 'DisplayName', 'NOMA - Far User', 'LineWidth', 1.5);
+semilogy(SNR, mean(poutNoma1, 1), '-', 'DisplayName', 'NOMA', 'LineWidth', 1.5);
 hold on;
 
 % Plot outage probability for OMA - Far User
-semilogy(SNR, mean(poutoma1, 1), '--', 'DisplayName', 'OMA - Far User', 'LineWidth', 1.5);
-
-% Plot outage probability for NOMA - Near User
-semilogy(SNR, mean(poutNoma2, 1), '-', 'DisplayName', 'NOMA - Near User', 'LineWidth', 1.5);
-
-% Plot outage probability for OMA - Near User
-semilogy(SNR, mean(poutoma2, 1), '--', 'DisplayName', 'OMA - Near User', 'LineWidth', 1.5);
+semilogy(SNR, mean(poutoma1, 1), '--', 'DisplayName', 'OMA', 'LineWidth', 1.5);
 
 % Add labels, title, and legend
 xlabel('SNR (dB)');
 ylabel('Outage Probability');
-title('Outage Probability vs SNR for Both Near and Far Users');
+title('Outage Probability vs SNR for Far User');
+legend('Location', 'northeast');
+grid on;
+hold off;
+
+% Create a figure for the near user
+figure;
+
+% Plot outage probability for NOMA - Near User
+semilogy(SNR, mean(poutNoma2, 1), '-', 'DisplayName', 'NOMA', 'LineWidth', 1.5);
+hold on;
+
+% Plot outage probability for OMA - Near User
+semilogy(SNR, mean(poutoma2, 1), '--', 'DisplayName', 'OMA', 'LineWidth', 1.5);
+
+% Add labels, title, and legend
+xlabel('SNR (dB)');
+ylabel('Outage Probability');
+title('Outage Probability vs SNR for Near User');
 legend('Location', 'northeast');
 grid on;
 hold off;
