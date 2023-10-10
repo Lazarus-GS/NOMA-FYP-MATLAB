@@ -295,7 +295,6 @@ for i = 1:length(nearUserPositions)
             'LineStyle', '--', 'LineWidth', 1.5, 'Color', colors(j,:), 'Marker', 'O');
     end
     
-    % Add labels, title, and legend to each subplot
     xlabel('SNR (dB)');
     ylabel('Sum Rate Capacity (bps/Hz)');
     title(['Sum Rate for Near User at ' nearUserPositions{i}]);
