@@ -27,6 +27,28 @@ N = 10^4;
 un = 7.071;
 uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132, 15.811, 15.811, 21.2132];
 
+%Preallocating arrays
+C_noma_sum = zeros(length(farUserPositions), length(Pt));
+C_oma_sum = zeros(length(farUserPositions), length(Pt));
+R1_av = zeros(length(farUserPositions), length(Pt));
+R2_av = zeros(length(farUserPositions), length(Pt));
+SINR_noma_1 = zeros(length(farUserPositions), length(Pt));
+SINR_noma_2 = zeros(length(farUserPositions), length(Pt));
+SINR_oma_1 = zeros(length(farUserPositions), length(Pt));
+SINR_oma_2 = zeros(length(farUserPositions), length(Pt));
+ga1 = zeros(length(farUserPositions), length(Pt));
+ga2 = zeros(length(farUserPositions), length(Pt));
+poutNoma1 = zeros(length(farUserPositions), length(Pt));
+poutNoma2 = zeros(length(farUserPositions), length(Pt));
+poutoma1 = zeros(length(farUserPositions), length(Pt));
+poutoma2 = zeros(length(farUserPositions), length(Pt));
+ber1 = zeros(length(farUserPositions), length(Pt));
+ber2 = zeros(length(farUserPositions), length(Pt));
+nErr1 = zeros(length(farUserPositions), length(Pt));
+nErr2 = zeros(length(farUserPositions), length(Pt));
+simBer1 = zeros(length(farUserPositions), length(Pt));
+simBer2 = zeros(length(farUserPositions), length(Pt));
+
 for nearIdx = 1:length(nearUserPositions)
     for farIdx = 1:length(farUserPositions)
         for u = 1:length(Pt)
@@ -120,7 +142,6 @@ for nearIdx = 1:length(nearUserPositions)
             y1 = h1'.*x + w1;
             y2 = h2'.*x + w2;
 
-
             eq1 = y1./h1';
             eq2 = y2./h2';
 
@@ -164,6 +185,8 @@ for nearIdx = 1:length(nearUserPositions)
             newRow = {nearUserPositions{nearIdx}, farUserPositions{farIdx}, uf(farIdx), Pt(u), SNR, C_noma_sum(farIdx,u), C_noma_sum(nearIdx,u), ber1(farIdx,u), ber2(farIdx,u), poutNoma1(farIdx,u), poutNoma2(farIdx,u), 'NOMA'};
             datasetTable = [datasetTable; newRow];
         end
+        
+        SNR = Pt - No;
     end
 end
 
@@ -196,6 +219,11 @@ disp(['Data Loss Rate (User 2): ', num2str(data_loss_rate_NOMA_user2)]);
 
 [SNR_grid, uf_grid] = meshgrid(SNR, uf);
 
+disp(size(SNR_grid));
+disp(size(uf_grid));
+disp(size(C_noma_sum));
+
+
 figure;
 surf(SNR_grid, uf_grid, C_noma_sum, 'FaceColor', 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'none'); % NOMA in red
 hold on;
@@ -221,19 +249,14 @@ markerIndices = 1:1:length(SNR); % Place a marker every 5 data points
 
 for i = 1:length(nearUserPositions)
     for j = 1:length(farUserPositions)
-        % Extract the sum rate capacity for NOMA and OMA for the current combination
         sum_rate_noma = C_noma_sum(j, :);
         sum_rate_oma = C_oma_sum(j, :);
         
-        % Plot the NOMA sum rate capacity vs SNR with solid lines, colormap, specific marker, and increased marker frequency
         hNOMA = plot(SNR, sum_rate_noma, 'LineStyle', lineStyles{1}, 'Marker', markers{i}, 'LineWidth', 1.5, 'Color', colors(j,:), 'MarkerIndices', markerIndices);
         hold on;
-        
-        % Plot the OMA sum rate capacity vs SNR with dashed lines, colormap, specific marker, and increased marker frequency
         hOMA = plot(SNR, sum_rate_oma, 'LineStyle', lineStyles{2}, 'Marker', markers{i}, 'LineWidth', 1.5, 'Color', colors(j,:), 'MarkerIndices', markerIndices);
         hold on;
         
-        % Store handles and entries for the legend
         legendHandles = [legendHandles, hNOMA, hOMA];
         legendEntries{end+1} = ['NOMA: ' nearUserPositions{i} ' to ' farUserPositions{j}];
         legendEntries{end+1} = ['OMA: ' nearUserPositions{i} ' to ' farUserPositions{j}];
@@ -261,7 +284,7 @@ for i = 1:length(nearUserPositions)
     subplot(2, 2, i); % Assuming you have 4 near user positions, this will create a 2x2 grid of subplots
     
     for j = 1:length(farUserPositions)
-        
+
         sum_rate_noma = C_noma_sum(j, :);
         sum_rate_oma = C_oma_sum(j, :);
         
