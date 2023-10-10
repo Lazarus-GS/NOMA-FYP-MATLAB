@@ -255,6 +255,9 @@ disp(['Data Loss Rate (User 2): ', num2str(data_loss_rate_NOMA_user2)]);
 
 [SNR_grid, uf_grid] = meshgrid(SNR, uf);
 
+figureNumber = 1;
+set(0, 'DefaultFigurePosition', get(0, 'Screensize'));
+
 figure;
 surf(SNR_grid, uf_grid, C_noma_sum, 'FaceColor', 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'none'); % NOMA in red
 hold on;
@@ -265,6 +268,9 @@ zlabel('Sum Rate Capacity (bps/Hz)');
 title('Sum Rate Capacity for NOMA and OMA over SNR and User Position');
 legend('NOMA', 'OMA');
 hold off;
+filename = sprintf('plot%d.png', figureNumber);
+print(filename, '-dpng', '-r300');
+figureNumber = figureNumber + 1;
 
 
 % Define the position grid
@@ -329,6 +335,10 @@ legend(legendHandles, legendEntries, 'Location', 'eastoutside');
 
 grid on;
 hold off;
+filename = sprintf('plot%d.png', figureNumber);
+print(filename, '-dpng', '-r300');
+figureNumber = figureNumber + 1;
+
 %%%%%%%%%%%%%%%%%%%%%%
 %Sum rate capacity over SNR for different user
 % Create a new figure before starting the loop
@@ -362,6 +372,10 @@ for i = 1:length(near_user_positions)
     legend('Location', 'eastoutside'); % Place legend outside
     grid on;
     hold off;
+    filename = sprintf('plot%d.png', figureNumber);
+    print(filename, '-dpng', '-r300');
+    figureNumber = figureNumber + 1;
+
 end
 
 
@@ -395,6 +409,10 @@ title('BER vs SNR for Near and Far Users');
 legend('Location', 'southwest');
 grid on;
 hold off;
+filename = sprintf('plot%d.png', figureNumber);
+print(filename, '-dpng', '-r300');
+figureNumber = figureNumber + 1;
+
 
 %%%%%%%%%%%%%%%%%%%%%%
 
@@ -423,3 +441,6 @@ title('Outage Probability vs SNR for Both Near and Far Users');
 legend('Location', 'northeast');
 grid on;
 hold off;
+filename = sprintf('plot%d.png', figureNumber);
+print(filename, '-dpng', '-r300');
+figureNumber = figureNumber + 1;
