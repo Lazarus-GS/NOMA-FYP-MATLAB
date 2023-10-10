@@ -255,6 +255,10 @@ disp(['Data Loss Rate (User 2): ', num2str(data_loss_rate_NOMA_user2)]);
 
 [SNR_grid, uf_grid] = meshgrid(SNR, uf);
 
+disp(size(SNR_grid));
+disp(size(uf_grid));
+disp(size(C_noma_sum));
+
 figureNumber = 1;
 set(0, 'DefaultFigurePosition', get(0, 'Screensize'));
 
