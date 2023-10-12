@@ -11,8 +11,24 @@ position_grid = {'a1', 'a2', 'a3', 'a4',
                  'c1', 'c2', 'c3', 'c4',
                  'd1', 'd2', 'd3', 'd4'};
 
+% Define the coordinates for each position in the grid
+coordinates = [-15, 15; -5, 15; 5, 15; 15, 15;
+               -15, 5; -5, 5; 5, 5; 15, 5;
+               -15, -5; -5, -5; 5, -5; 15, -5;
+               -15, -15; -5, -15; 5, -15; 15, -15];
+
+% Calculate the distance from the AP to each position
+distances = sqrt(sum(coordinates.^2, 2));
+
+% Map the distances to the position grid
+distance_map = containers.Map(position_grid, distances);
+
 nearUserPositions = {'b2', 'b3', 'c2', 'c3'};
 farUserPositions = {'a1', 'a2', 'a3', 'a4', 'b1', 'b4', 'c1', 'c4', 'd1', 'd2', 'd3', 'd4'};
+
+% Extract the distances for the near and far user positions
+un = distance_map(nearUserPositions{1}); % Assuming all near users are at the same distance
+uf = cell2mat(values(distance_map, farUserPositions));
 
 seed = 10;
 rng(seed);
@@ -24,30 +40,17 @@ rate1 = 1; rate2 = 2;
 
 N = 10^4; 
 
-un = 7.071;
-uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132, 15.811, 15.811, 21.2132];
+%un = 7.071;
+%uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132, 15.811, 15.811, 21.2132];
 
 %Preallocating arrays
-C_noma_sum = zeros(length(farUserPositions), length(Pt));
-C_oma_sum = zeros(length(farUserPositions), length(Pt));
-R1_av = zeros(length(farUserPositions), length(Pt));
-R2_av = zeros(length(farUserPositions), length(Pt));
-SINR_noma_1 = zeros(length(farUserPositions), length(Pt));
-SINR_noma_2 = zeros(length(farUserPositions), length(Pt));
-SINR_oma_1 = zeros(length(farUserPositions), length(Pt));
-SINR_oma_2 = zeros(length(farUserPositions), length(Pt));
-ga1 = zeros(length(farUserPositions), length(Pt));
-ga2 = zeros(length(farUserPositions), length(Pt));
-poutNoma1 = zeros(length(farUserPositions), length(Pt));
-poutNoma2 = zeros(length(farUserPositions), length(Pt));
-poutoma1 = zeros(length(farUserPositions), length(Pt));
-poutoma2 = zeros(length(farUserPositions), length(Pt));
-ber1 = zeros(length(farUserPositions), length(Pt));
-ber2 = zeros(length(farUserPositions), length(Pt));
-nErr1 = zeros(length(farUserPositions), length(Pt));
-nErr2 = zeros(length(farUserPositions), length(Pt));
-simBer1 = zeros(length(farUserPositions), length(Pt));
-simBer2 = zeros(length(farUserPositions), length(Pt));
+variables = {'C_noma_sum', 'C_oma_sum', 'R1_av', 'R2_av', 'SINR_noma_1', 'SINR_noma_2', ...
+             'SINR_oma_1', 'SINR_oma_2', 'ga1', 'ga2', 'poutNoma1', 'poutNoma2', ...
+             'poutoma1', 'poutoma2', 'ber1', 'ber2', 'nErr1', 'nErr2', 'simBer1', 'simBer2'};
+
+for i = 1:length(variables)
+    eval([variables{i} ' = zeros(length(farUserPositions), length(Pt));']);
+end
 
 for nearIdx = 1:length(nearUserPositions)
     for farIdx = 1:length(farUserPositions)
@@ -341,3 +344,5 @@ title('Outage Probability vs SNR for Both Near and Far Users');
 legend('Location', 'northeast');
 grid on;
 hold off;
+
+writetable(datasetTable, 'simulation_dataset1.csv');
