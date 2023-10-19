@@ -6,7 +6,7 @@ close all;
 columnNames = {'NearUserPos', 'FarUserPos', 'NearUserDist', 'FarUserDist', 'TransmitPower', 'SNR', 'SumRateFarUser', 'SumRateNearUser', 'BERFarUser', 'BERNearUser', 'OutageProbFarUser', 'OutageProbNearUser', 'MAScheme'};
 datasetTable = table('Size', [0 13], 'VariableTypes', {'string', 'string', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'string'}, 'VariableNames', columnNames);
 
-% Step 2: Define the Position Grid
+% Define the Position Grid
 gridSize = 12;
 blockLength = 10; % Length of a single block
 
@@ -27,7 +27,7 @@ for i = 1:gridSize
     end
 end
 
-% Step 3: Define Near and Far User Positions
+% Define Near and Far User Positions
 innerBoundary = 4;
 outerBoundary = 9;
 
@@ -43,18 +43,15 @@ for i = 1:gridSize
     end
 end
 
-% Create a logical matrix to determine if a position is near the user
 isNearUser = false(gridSize, gridSize);
 for i = 1:length(nearUserPositions)
     [row, col] = find(strcmp(positionLabels, nearUserPositions{i}));
     isNearUser(row, col) = true;
 end
 
-% Flatten the coordinates and isNearUser matrices
 flatCoordinates = reshape(coordinates, [], 2);
 flatIsNearUser = isNearUser(:);
 
-% Extract near and far user coordinates using logical indexing
 nearUserCoordinates = flatCoordinates(flatIsNearUser, :);
 farUserCoordinates = flatCoordinates(~flatIsNearUser, :);
 
