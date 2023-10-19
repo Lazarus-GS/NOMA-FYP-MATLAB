@@ -62,7 +62,7 @@ uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132,
         %no = (10^-3)*10.^(No/10);   %Noise power (linear scale)
 
         %Power allocation coefficients
-        a1 = 0.75; 
+        a1 = 0.3; 
         a2 = 1-a1; 
         %a3 = 1-(a1+a2);
 
@@ -213,12 +213,15 @@ uf = [21.2132, 15.811, 15.811, 21.2132, 15.811, 15.811, 15.811, 15.811, 21.2132,
             ipHat1 = real(y1Hat)>0;
             ipHat2 = real(y2Hat)>0;
 
-            % counting the errors
-            nErr1(m,u) = size(find([data1- ipHat1]),2);
-            nErr2(m,u) = size(find([data2- ipHat2]),2);
+            simBer1(m,u) = biterr(data1,ipHat1)/N;
+            simBer2(m,u) = biterr(data2,ipHat2)/N;
 
-            simBer1(m,u) = nErr1(m,u)/N; % simulated ber
-            simBer2(m,u) = nErr2(m,u)/N;
+            % % counting the errors
+            % nErr1(m,u) = size(find([data1- ipHat1]),2);
+            % nErr2(m,u) = size(find([data2- ipHat2]),2);
+
+            % simBer1(m,u) = nErr1(m,u)/N; % simulated ber
+            % simBer2(m,u) = nErr2(m,u)/N;
        
         end
         
