@@ -149,10 +149,10 @@ for nearIdx = 1:length(nearUserPositions)
 
             SNR = Pt(u) - No;
 
-            newRow = {nearUserPositions{nearIdx}, farUserPositions{farIdx}, uf(farIdx), Pt(u), SNR, C_oma_sum(farIdx,u), C_oma_sum(nearIdx,u), ber1(farIdx,u), ber2(farIdx,u), poutoma1(farIdx,u), poutoma2(farIdx,u), 'OMA'};
+            newRow = {nearUserPositions{nearIdx}, farUserPositions{farIdx}, uf(farIdx), Pt(u), SNR, C_oma_sum(farIdx,u), C_oma_sum(nearIdx,u), simBer1(farIdx,u), simBer2(farIdx,u), poutoma1(farIdx,u), poutoma2(farIdx,u), 'OMA'};
             datasetTable = [datasetTable; newRow];
             
-            newRow = {nearUserPositions{nearIdx}, farUserPositions{farIdx}, uf(farIdx), Pt(u), SNR, C_noma_sum(farIdx,u), C_noma_sum(nearIdx,u), simBer1(farIdx,u), simBer2(farIdx,u),  poutNoma1(farIdx,u), poutNoma2(farIdx,u), 'NOMA'};
+            newRow = {nearUserPositions{nearIdx}, farUserPositions{farIdx}, uf(farIdx), Pt(u), SNR, C_noma_sum(farIdx,u), C_noma_sum(nearIdx,u), ber1(farIdx,u), ber2(farIdx,u),  poutNoma1(farIdx,u), poutNoma2(farIdx,u), 'NOMA'};
             datasetTable = [datasetTable; newRow];
         end
     end
