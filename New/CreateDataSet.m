@@ -11,7 +11,7 @@ farUserPositions = {'a1', 'a2', 'a3', 'a4', 'b1', 'b4', 'c1', 'c4', 'd1', 'd2', 
 seed = 10;
 rng(seed);
 
-Pt = -114:2:-54;	
+Pt = -114:0.5:-54;	
 pt = db2pow(Pt);	
 
 rate1 = 1; rate2 = 2;       
@@ -144,21 +144,18 @@ for nearIdx = 1:length(nearUserPositions)
             ipHat1 = real(y1Hat)>0;
             ipHat2 = real(y2Hat)>0;
 
-            nErr1(farIdx,u) = size(find([data1- ipHat1]),2);
-            nErr2(farIdx,u) = size(find([data2- ipHat2]),2);
-
-            simBer1(farIdx,u) = nErr1(farIdx,u)/N; 
-            simBer2(farIdx,u) = nErr2(farIdx,u)/N;
+            simBer1(farIdx,u) = biterr(data1,ipHat1)/N;
+            simBer2(farIdx,u) = biterr(data2,ipHat2)/N;
 
             SNR = Pt(u) - No;
 
-            newRow = {nearUserPositions{nearIdx}, farUserPositions{farIdx}, uf(farIdx), Pt(u), SNR, C_oma_sum(farIdx,u), C_oma_sum(nearIdx,u), simBer1(farIdx,u), simBer2(farIdx,u), poutoma1(farIdx,u), poutoma2(farIdx,u), 'OMA'};
+            newRow = {nearUserPositions{nearIdx}, farUserPositions{farIdx}, uf(farIdx), Pt(u), SNR, C_oma_sum(farIdx,u), C_oma_sum(nearIdx,u), ber1(farIdx,u), ber2(farIdx,u), poutoma1(farIdx,u), poutoma2(farIdx,u), 'OMA'};
             datasetTable = [datasetTable; newRow];
             
-            newRow = {nearUserPositions{nearIdx}, farUserPositions{farIdx}, uf(farIdx), Pt(u), SNR, C_noma_sum(farIdx,u), C_noma_sum(nearIdx,u), ber1(farIdx,u), ber2(farIdx,u), poutNoma1(farIdx,u), poutNoma2(farIdx,u), 'NOMA'};
+            newRow = {nearUserPositions{nearIdx}, farUserPositions{farIdx}, uf(farIdx), Pt(u), SNR, C_noma_sum(farIdx,u), C_noma_sum(nearIdx,u), simBer1(farIdx,u), simBer2(farIdx,u),  poutNoma1(farIdx,u), poutNoma2(farIdx,u), 'NOMA'};
             datasetTable = [datasetTable; newRow];
         end
     end
 end
 
-writetable(datasetTable, 'simulation_dataset.csv');
+writetable(datasetTable, 'simulation_dataset1.csv');
